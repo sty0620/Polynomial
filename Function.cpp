@@ -11,7 +11,7 @@ Status CreatePoly(Poly& P)
         return Error;
     }
     for (int i = 0; i < n; i++) {
-        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数，第二个数表示对应指数(不可为0) \n", i + 1);
+        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数（正整数） \n", i + 1);
         scanf("%lf %d", &P.elem[i].xishu, &P.elem[i].zhishu);
     }
     P.length = n;
@@ -66,7 +66,7 @@ Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
             ResultP.elem[Len_ResultP++] = P2.elem[P2_Pos++];
         }
         else {
-            XishuResultP = P1.elem[P1_Pos].zhishu + P2.elem[P2_Pos].zhishu;
+            XishuResultP = P1.elem[P1_Pos].xishu + P2.elem[P2_Pos].xishu;
             if (XishuResultP != 0) {
                 ResultP.elem[Len_ResultP].xishu = XishuResultP;
                 ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
@@ -105,10 +105,13 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
             ResultP.elem[Len_ResultP++] = P1.elem[P1_Pos++];
         }
         else if (P1.elem[P1_Pos].zhishu > P2.elem[P2_Pos].zhishu) {
-            ResultP.elem[Len_ResultP++] = P2.elem[P2_Pos++];
+            ResultP.elem[Len_ResultP].xishu = P2.elem[P2_Pos].xishu * -1;
+            ResultP.elem[Len_ResultP].zhishu = P2.elem[P2_Pos].zhishu;
+            Len_ResultP++;
+            P2_Pos++;
         }
         else {
-            XishuResultP = P1.elem[P1_Pos].zhishu - P2.elem[P2_Pos].zhishu;
+            XishuResultP = P1.elem[P1_Pos].xishu - P2.elem[P2_Pos].xishu;
             if (XishuResultP != 0) {
                 ResultP.elem[Len_ResultP].xishu = XishuResultP;
                 ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
@@ -120,12 +123,18 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
     }
     if (P1_Pos == P1.length) {
         while (P2_Pos < P2.length) {
-            ResultP.elem[Len_ResultP++] = P2.elem[P2_Pos++];
+            ResultP.elem[Len_ResultP].zhishu = P2.elem[P2_Pos].zhishu;
+            ResultP.elem[Len_ResultP].xishu = P2.elem[P2_Pos].xishu*-1;
+            Len_ResultP++;
+            P2_Pos++;
         }
     }
     if (P2_Pos == P2.length) {
         while (P1_Pos < P1.length) {
-            ResultP.elem[Len_ResultP++] = P1.elem[P1_Pos++];
+            ResultP.elem[Len_ResultP].xishu = P1.elem[P1_Pos].xishu;
+            ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
+            Len_ResultP++;
+            P1_Pos++;
         }
     }
     ResultP.length = Len_ResultP;
@@ -135,6 +144,27 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
 
 Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 {
+    
+    int P1_Pos, P2_Pos, Len_ResultP = 0;
+    double XishuResultP;
+    int ZhishuResultP ;
+    ResultP.elem = (Term*)calloc(P1.length * P2.length, sizeof(Term));
+    if (NULL == ResultP.elem) {
+        printf("error:faild to allocate memory\n");
+        return Error;
+    }
+    for (P1_Pos = 0; P1_Pos < P1.length; P1_Pos++) {
+        for (P2_Pos = 0; P2_Pos < P2.length; P2_Pos++) {
+            ResultP.elem[Len_ResultP].xishu = P1.elem[P1_Pos].xishu * P2.elem[P2_Pos].xishu;
+            ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu + P2.elem[P2_Pos].zhishu;
+            Len_ResultP++;
+        }
+    }
+    ResultP.length = Len_ResultP;
+    //PrintPoly(ResultP);
+    SortPoly(ResultP);
+    MergePoly(ResultP);
+    //PrintPoly(ResultP);
     return Success;
 }
 
@@ -143,12 +173,12 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
     return Success;
 }
 
-Status DiffPloy(Poly P, Poly& ResultP)
+Status DiffPloy(Poly P, Poly& ResultP)//微分
 {
     return Success;
 }
 
-Status IntrgralPloy(Poly P, Poly& ResultP)
+Status IntrgralPloy(Poly P, Poly& ResultP)//积分
 {
     return Success;
 }

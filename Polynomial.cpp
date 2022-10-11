@@ -14,7 +14,9 @@ int main()
     PrintPoly(P);
     PrintPoly(Q);
     printf("----\n");
-    AddPoly(P, Q, R);
+    //AddPoly(P, Q, R);
+    //SubPoly(P, Q, R);
+    MulPoly(P, Q, R);
     PrintPoly(R);
     printf("Success");
 }
