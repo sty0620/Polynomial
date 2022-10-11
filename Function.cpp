@@ -11,7 +11,7 @@ Status CreatePoly(Poly& P)
         return Error;
     }
     for (int i = 0; i < n; i++) {
-        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数（正整数） \n", i + 1);
+        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数(正整数) \n", i + 1);
         scanf("%lf %d", &P.elem[i].xishu, &P.elem[i].zhishu);
     }
     P.length = n;
@@ -161,10 +161,9 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
         }
     }
     ResultP.length = Len_ResultP;
-    //PrintPoly(ResultP);
     SortPoly(ResultP);
     MergePoly(ResultP);
-    //PrintPoly(ResultP);
+    ResultP.elem = (Term*)realloc(ResultP.elem, ResultP.length * sizeof(Term));
     return Success;
 }
 
@@ -175,11 +174,38 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 
 Status DiffPloy(Poly P, Poly& ResultP)//微分
 {
+    ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
+    if (NULL == ResultP.elem) {
+        printf("error:faild to allocate memory\n");
+        return Error;
+    }
+    int len = 0;
+    for (int i = 0; i < P.length;i++) {
+        if (P.elem[i].zhishu == 0) {
+            continue;
+        }
+        else {
+            ResultP.elem[len].xishu = P.elem[i].xishu * P.elem[i].zhishu;
+            ResultP.elem[len].zhishu = P.elem[i].zhishu - 1;
+            len++;
+        }
+    }
+    ResultP.length = len;
     return Success;
 }
 
-Status IntrgralPloy(Poly P, Poly& ResultP)//积分
+Status IntrgralPloy(Poly P, Poly& ResultP)//积分 此时默认常数项等于0
 {
+    ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
+    if (NULL == ResultP.elem) {
+        printf("error:faild to allocate memory\n");
+        return Error;
+    }
+    for (int i = 0; i < P.length; i++) {
+        ResultP.elem[i].xishu = P.elem[i].xishu / (P.elem[i].zhishu+1);
+        ResultP.elem[i].zhishu = P.elem[i].zhishu + 1;
+    }
+    ResultP.length = P.length;
     return Success;
 }
 
