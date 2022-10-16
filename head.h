@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include<math.h>
 #include<time.h>
 #include <conio.h>
 #include<Windows.h>
@@ -20,7 +21,9 @@ typedef struct Poly {
 	Term* elem;
 	int length;
 }Poly;
-Status CreatePoly(Poly& P);//创建
+Status CreatePoly(Poly& P);//从键盘输入创建
+Status CreatePolyFromArrey(Poly& P, int MaxZhishu,double Xishu[]);//从数组中创建
+int PolyLength(double xishu[], int MaxZhishu);//从数组中找到系数不为0的个数，用于创建Poly,其中＜0.001的舍去
 Status DestoryPloy(Poly& P);//销毁
 Status PrintPoly(Poly P);//遍历
 Status AddPoly(Poly P1, Poly P2, Poly& ResultP);//相加

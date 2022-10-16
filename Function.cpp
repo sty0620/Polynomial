@@ -11,11 +11,46 @@ Status CreatePoly(Poly& P)
         return Error;
     }
     for (int i = 0; i < n; i++) {
-        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数(正整数) \n", i + 1);
+        printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数(非负数) \n", i + 1);
         scanf("%lf %d", &P.elem[i].xishu, &P.elem[i].zhishu);
     }
     P.length = n;
     return Success;
+}
+
+Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
+{
+    int len = PolyLength(Xishu, MaxZhishu);
+    if (len == 0) {
+        if ((P.elem = (Term*)calloc(1, sizeof(Term))) == NULL) {
+            printf("error:faild to allocate memory\n");
+            return Error;
+        }
+        P.elem[0].xishu = P.elem[0].zhishu = 0;
+        P.length = 1;
+        return Success;
+    }
+    P.elem = (Term*)calloc(len, sizeof(Term));
+    for (int i = 0,j = 0; i <= MaxZhishu; i++) {
+        if (fabs(Xishu[i]) + 0.005 >= 0.01) {
+            P.elem[j].xishu = Xishu[i];
+            P.elem[j].zhishu = i;
+            j++;
+        }
+    }
+    P.length = len;
+    return Success;
+}
+
+int PolyLength(double xishu[], int MaxZhishu)
+{
+    int len = 0;
+    for (int i = 0; i <= MaxZhishu; i++) {
+        if ((fabs(xishu[i]) + 0.005)>=0.01) {
+            len++;
+        }
+    }
+    return len;
 }
 
 Status DestoryPloy(Poly& P)
@@ -146,8 +181,6 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 {
     
     int P1_Pos, P2_Pos, Len_ResultP = 0;
-    double XishuResultP;
-    int ZhishuResultP ;
     ResultP.elem = (Term*)calloc(P1.length * P2.length, sizeof(Term));
     if (NULL == ResultP.elem) {
         printf("error:faild to allocate memory\n");
@@ -169,6 +202,34 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 
 Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 {
+    if (P1.elem == NULL || P2.elem == NULL) {
+        printf("数据无效\n");
+        return Error;
+    }
+    int Max_ZhishuP1 = -1, Max_ZhishuP2 = -1;
+    double P1_Xishu[1000]={0}, P2_Xishu[1000] = { 0 }, Quotient[1000] = { 0 };
+    for (int i = 0; i < P1.length; i++) {
+        P1_Xishu[P1.elem[i].zhishu] = P1.elem[i].xishu;
+        Max_ZhishuP1 = Max_ZhishuP1 > P1.elem[i].zhishu ? Max_ZhishuP1 : P1.elem[i].zhishu;
+    }
+    for (int i = 0; i < P2.length; i++) {
+        P2_Xishu[P2.elem[i].zhishu] = P2.elem[i].xishu;
+        Max_ZhishuP2 = Max_ZhishuP2 > P2.elem[i].zhishu ? Max_ZhishuP2 : P2.elem[i].zhishu;
+    }
+    int t1 = Max_ZhishuP1, t2 = Max_ZhishuP2;
+    while (t1 >= t2) {
+        double result = P1_Xishu[t1] / P2_Xishu[t2];
+        Quotient[t1 - t2] = result;
+        for (int i = t1, j = t2; j >= 0; j--, i--) {
+            P1_Xishu[i] -= P2_Xishu[j] * result;
+        }
+        t1--;
+        /*while (fabs(P1_Xishu[t1] < 1e-7)) {
+            t1--;
+        }*/
+    }
+    CreatePolyFromArrey(ResultP, Max_ZhishuP1 - Max_ZhishuP2, Quotient);
+    CreatePolyFromArrey(RemainderP, Max_ZhishuP2, P1_Xishu);
     return Success;
 }
 
@@ -226,8 +287,10 @@ void Qsort(Poly& P, int left, int right) {
     high = right;
     while (low != high) {
         while (P.elem[high].zhishu >= TempNum && low < high)high--;
+        //while (P.elem[high].zhishu <= TempNum && low < high)high--;
         P.elem[low] = P.elem[high];
         while (P.elem[low].zhishu <= TempNum && low < high)low++;
+        //while (P.elem[low].zhishu >= TempNum && low < high)low++;
         P.elem[high] = P.elem[low];
     }
     P.elem[low] = TempTerm;
