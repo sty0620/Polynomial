@@ -21,7 +21,9 @@ typedef struct Poly {
 	Term* elem;
 	int length;
 }Poly;
+Status InitPoly(Poly& P);
 Status CreatePoly(Poly& P);//从键盘输入创建
+Status CreatAndMerge(Poly& P);
 Status CreatePolyFromArrey(Poly& P, int MaxZhishu,double Xishu[]);//从数组中创建
 int PolyLength(double xishu[], int MaxZhishu);//从数组中找到系数不为0的个数，用于创建Poly,其中＜0.001的舍去
 Status DestoryPloy(Poly& P);//销毁
@@ -34,6 +36,5 @@ Status DiffPloy(Poly P, Poly& ResultP);//微分
 Status IntrgralPloy(Poly P, Poly& ResultP);//积分
 void SortPoly(Poly& P);//排序
 void Qsort(Poly& P, int left, int right);
-void swop(Term* a, Term* b);
 void MergePoly(Poly& P);
 #endif // 

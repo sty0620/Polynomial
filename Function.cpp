@@ -1,5 +1,12 @@
 #include "head.h"
 
+Status InitPoly(Poly& P)
+{
+    P.elem = NULL;
+    P.length = 0;
+    return Success;
+}
+
 Status CreatePoly(Poly& P)
 {
     int n;
@@ -16,6 +23,16 @@ Status CreatePoly(Poly& P)
     }
     P.length = n;
     return Success;
+}
+
+Status CreatAndMerge(Poly& P)
+{
+    CreatePoly(P);
+    SortPoly(P);
+    MergePoly(P);
+    printf("您创建的多项式为：");
+    PrintPoly(P);
+    return Status();
 }
 
 Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
@@ -68,7 +85,7 @@ Status DestoryPloy(Poly& P)
 Status PrintPoly(Poly P)
 {
     if (P.length == 0 || NULL == P.elem) {
-        printf("无数据\n");
+        printf("无数据或者尚未初始化\n");
         return Error;
     }
     printf("%.2fx^%d", P.elem[0].xishu, P.elem[0].zhishu);
@@ -86,6 +103,10 @@ Status PrintPoly(Poly P)
 
 Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
 {
+    if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
     int P1_Pos = 0, P2_Pos = 0, Len_ResultP = 0;
     double XishuResultP;
     ResultP.elem = (Term*)calloc(P1.length + P2.length, sizeof(Term));
@@ -128,6 +149,10 @@ Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
 
 Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
 {
+    if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
     int P1_Pos = 0, P2_Pos = 0, Len_ResultP = 0;
     double XishuResultP;
     ResultP.elem = (Term*)calloc(P1.length + P2.length, sizeof(Term));
@@ -179,7 +204,10 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
 
 Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 {
-    
+    if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
     int P1_Pos, P2_Pos, Len_ResultP = 0;
     ResultP.elem = (Term*)calloc(P1.length * P2.length, sizeof(Term));
     if (NULL == ResultP.elem) {
@@ -202,9 +230,21 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 
 Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 {
-    if (P1.elem == NULL || P2.elem == NULL) {
-        printf("数据无效\n");
+    if (P1.length == 0 || NULL == P1.elem|| P2.length == 0 || NULL == P2.elem) {
+        printf("无数据或者尚未初始化\n");
         return Error;
+    }
+    if (P1.elem[P1.length - 1].zhishu < P2.elem[P2.length - 1].zhishu) {
+        printf("被除数多项式最大系数小于除数多项式系数\n");
+        ResultP.elem = (Term*)calloc(1, sizeof(Term));
+        if (NULL == ResultP.elem) {
+            printf("error:faild to allocate memory\n");
+            return Error;
+        }
+        ResultP.elem[0].xishu = ResultP.elem[0].zhishu = 0;
+        ResultP.length = 1;
+        RemainderP = P2;
+        return Success;
     }
     int Max_ZhishuP1 = -1, Max_ZhishuP2 = -1;
     double P1_Xishu[1000]={0}, P2_Xishu[1000] = { 0 }, Quotient[1000] = { 0 };
@@ -235,6 +275,10 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 
 Status DiffPloy(Poly P, Poly& ResultP)//微分
 {
+    if (P.length == 0 || NULL == P.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
     ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
     if (NULL == ResultP.elem) {
         printf("error:faild to allocate memory\n");
@@ -257,6 +301,10 @@ Status DiffPloy(Poly P, Poly& ResultP)//微分
 
 Status IntrgralPloy(Poly P, Poly& ResultP)//积分 此时默认常数项等于0
 {
+    if (P.length == 0 || NULL == P.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
     ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
     if (NULL == ResultP.elem) {
         printf("error:faild to allocate memory\n");
@@ -297,17 +345,17 @@ void Qsort(Poly& P, int left, int right) {
     Qsort(P, left, low - 1);
     Qsort(P, low + 1, right);
 }
-void swop(Term* a, Term* b) {
-    Term* temp;
-    temp = a;
-    a = b;
-    b = temp;
-}
 void MergePoly(Poly& P) {
     for (int i = 0; i < P.length; i++) {
         for (int j = i+1; j < P.length&&P.elem[i].zhishu==P.elem[j].zhishu; ) {
             P.elem[i].xishu += P.elem[j].xishu;
             for (int k = j + 1; k < P.length; k++) {
+                P.elem[k - 1] = P.elem[k];
+            }
+            P.length--;
+        }
+        if (P.elem[i].xishu == 0) {
+            for (int k = i + 1; k < P.length; k++) {
                 P.elem[k - 1] = P.elem[k];
             }
             P.length--;
