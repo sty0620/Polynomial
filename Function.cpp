@@ -59,11 +59,11 @@ Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
     return Success;
 }
 
-int PolyLength(double xishu[], int MaxZhishu)
+int PolyLength(double Xishu[], int MaxZhishu)
 {
     int len = 0;
     for (int i = 0; i <= MaxZhishu; i++) {
-        if ((fabs(xishu[i]) + 0.005)>=0.01) {
+        if ((fabs(Xishu[i]) + 0.005)>=0.01) {//小于0.005的直接舍去
             len++;
         }
     }
@@ -78,7 +78,6 @@ Status DestoryPloy(Poly& P)
         return Error;
     }
     free(P.elem);
-    printf("数据删除成功\n");
     return Success;
 }
 
@@ -98,6 +97,25 @@ Status PrintPoly(Poly P)
         } 
     }
     printf("\n");
+    return Success;
+}
+
+Status PrintPolyOfIntrgral(Poly P)
+{
+    if (P.length == 0 || NULL == P.elem) {
+        printf("无数据或者尚未初始化\n");
+        return Error;
+    }
+    printf("λ+%.2fx^%d", P.elem[0].xishu, P.elem[0].zhishu);
+    for (int i = 1; i < P.length; i++) {
+        if (P.elem[i].xishu < 0) {
+            printf("%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+        }
+        else {
+            printf("+%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+        }
+    }
+    printf(" (λ表示常数)\n");
     return Success;
 }
 
@@ -243,7 +261,7 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
         }
         ResultP.elem[0].xishu = ResultP.elem[0].zhishu = 0;
         ResultP.length = 1;
-        RemainderP = P2;
+        RemainderP = P1;
         return Success;
     }
     int Max_ZhishuP1 = -1, Max_ZhishuP2 = -1;
@@ -264,9 +282,6 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
             P1_Xishu[i] -= P2_Xishu[j] * result;
         }
         t1--;
-        /*while (fabs(P1_Xishu[t1] < 1e-7)) {
-            t1--;
-        }*/
     }
     CreatePolyFromArrey(ResultP, Max_ZhishuP1 - Max_ZhishuP2, Quotient);
     CreatePolyFromArrey(RemainderP, Max_ZhishuP2, P1_Xishu);
@@ -335,10 +350,8 @@ void Qsort(Poly& P, int left, int right) {
     high = right;
     while (low != high) {
         while (P.elem[high].zhishu >= TempNum && low < high)high--;
-        //while (P.elem[high].zhishu <= TempNum && low < high)high--;
         P.elem[low] = P.elem[high];
         while (P.elem[low].zhishu <= TempNum && low < high)low++;
-        //while (P.elem[low].zhishu >= TempNum && low < high)low++;
         P.elem[high] = P.elem[low];
     }
     P.elem[low] = TempTerm;

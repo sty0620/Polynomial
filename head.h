@@ -28,6 +28,7 @@ Status CreatePolyFromArrey(Poly& P, int MaxZhishu,double Xishu[]);//从数组中创建
 int PolyLength(double xishu[], int MaxZhishu);//从数组中找到系数不为0的个数，用于创建Poly,其中＜0.001的舍去
 Status DestoryPloy(Poly& P);//销毁
 Status PrintPoly(Poly P);//遍历
+Status PrintPolyOfIntrgral(Poly P);
 Status AddPoly(Poly P1, Poly P2, Poly& ResultP);//相加
 Status SubPoly(Poly P1, Poly P2, Poly& ResultP);//相减
 Status MulPoly(Poly P1, Poly P2, Poly& ResultP);//相乘
