@@ -1,4 +1,4 @@
-#include "head.h"
+#include"head.h"
 
 Status InitPoly(Poly& P)
 {
@@ -12,6 +12,10 @@ Status CreatePoly(Poly& P)
     int n;
     printf("请输入非零项数的个数 ");
     scanf("%d", &n);
+    while (n <= 0) {
+        printf("创建的多项式项数必须大于0\n");
+        scanf("%d", &n);
+    }
     P.elem = (Term*)calloc(n, sizeof(Term));
     if (NULL == P.elem) {
         printf("error:faild to allocate memory\n");
@@ -358,6 +362,7 @@ void Qsort(Poly& P, int left, int right) {
     Qsort(P, left, low - 1);
     Qsort(P, low + 1, right);
 }
+
 void MergePoly(Poly& P) {
     for (int i = 0; i < P.length; i++) {
         for (int j = i+1; j < P.length&&P.elem[i].zhishu==P.elem[j].zhishu; ) {

@@ -1,10 +1,9 @@
 #pragma once
+
 #ifndef  USER_H_INCLUDED
 #define USER_H_INCLUDED
-
+#include"head.h"
 #define   NR(x)   (sizeof(x)/sizeof(x[0]+0))
-CONSOLE_CURSOR_INFO cci;
-COORD pos = { 0, 0 };
 enum {
     UP = 72, DOWN = 80, LEFT = 75, RIGHT = 77, ENTER = 13, ESC = 27,
 };

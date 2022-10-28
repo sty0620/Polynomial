@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="Polynomial.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="head.h" />
