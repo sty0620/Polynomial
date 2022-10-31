@@ -110,7 +110,12 @@ Status PrintPolyOfIntrgral(Poly P)
         printf("无数据或者尚未初始化\n");
         return Error;
     }
-    printf("λ+%.2fx^%d", P.elem[0].coef, P.elem[0].expn);
+    if (P.elem[0].coef >= 0) {
+        printf("λ+%.2fx^%d", P.elem[0].coef, P.elem[0].expn);
+    }
+    else {
+        printf("λ%.2fx^%d", P.elem[0].coef, P.elem[0].expn);
+    }
     for (int i = 1; i < P.length; i++) {
         if (P.elem[i].coef < 0) {
             printf("%.2fx^%d", P.elem[i].coef, P.elem[i].expn);
@@ -269,7 +274,7 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
         return Success;
     }
     int Max_ZhishuP1 = -1, Max_ZhishuP2 = -1;
-    double P1_Xishu[20000]={0}, P2_Xishu[20000] = { 0 }, Quotient[20000] = { 0 };
+    double P1_Xishu[30000]={0}, P2_Xishu[30000] = { 0 }, Quotient[30000] = { 0 };
     for (int i = 0; i < P1.length; i++) {
         P1_Xishu[P1.elem[i].expn] = P1.elem[i].coef;
         Max_ZhishuP1 = Max_ZhishuP1 > P1.elem[i].expn ? Max_ZhishuP1 : P1.elem[i].expn;
