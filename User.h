@@ -10,7 +10,7 @@ enum {
 void print_head();
 int  get_userinput(int* index, int size);
 void showmenu(HANDLE hOut, char** menu, int size, int index);
-void Clean(HANDLE hOut);
-void cciVisiable(HANDLE hOut);
-void cciNotVisiable(HANDLE hOut);
+void Clean(HANDLE hOut, CONSOLE_CURSOR_INFO &cci);
+void cciNotVisiable(HANDLE hOut, CONSOLE_CURSOR_INFO& cci);
+void cciVisiable(HANDLE hOut, CONSOLE_CURSOR_INFO& cci);
 #endif

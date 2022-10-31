@@ -15,7 +15,7 @@ int main() {
     CreatAndMerge(P);
     printf("\n请输入你的第二个多项式(用于减法中减数 / 除法中除数)：\n");
     CreatAndMerge(Q);
-    Clean(hOut);
+    Clean(hOut,Cci);
     Cci.dwSize = 1; 
     Cci.bVisible = 0;
     SetConsoleCursorInfo(hOut, &Cci);
@@ -29,19 +29,18 @@ int main() {
         if (ret == ENTER) {
             switch (index) {
             case 0: {
+                cciVisiable(hOut, Cci);
                 puts("您要修改的是第一个多项式还是第二个多项式？（请输入对应的数字，只能输入1或者2）");
                 while (true) {
                     int flag;
                     scanf("%d", &flag);
                     if (flag == 1) {
-                        DestoryPloy(P);
-                        cciVisiable(hOut);
+                        DestoryPloy(P);    
                         CreatAndMerge(P);
                         break;
                     }
                     else if (flag == 2) {
                         DestoryPloy(Q);
-                        cciVisiable(hOut);
                         CreatAndMerge(Q);
                         break;
                     }
@@ -49,7 +48,7 @@ int main() {
                         puts("你输入的数字有误，请重新输入");
                     }
                 } 
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 1: {
@@ -57,7 +56,7 @@ int main() {
                 PrintPoly(P);
                 printf("当前第二个多项式： ");
                 PrintPoly(Q);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 2: {
@@ -69,7 +68,7 @@ int main() {
                 printf("相加的结果为：");
                 PrintPoly(Result);
                 DestoryPloy(Result);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 3: {
@@ -81,7 +80,7 @@ int main() {
                 printf("相减的结果为：");
                 PrintPoly(Result);
                 DestoryPloy(Result);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 4: {
@@ -93,7 +92,7 @@ int main() {
                 printf("相乘的结果为：");
                 PrintPoly(Result);
                 DestoryPloy(Result);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 5: {
@@ -110,7 +109,7 @@ int main() {
                 PrintPoly(Remainder);
                 DestoryPloy(Result);
                 DestoryPloy(Remainder);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 6: {
@@ -120,7 +119,7 @@ int main() {
                 printf("求导后得到多项式：");
                 PrintPoly(Result);
                 DestoryPloy(Result);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 7: {
@@ -130,11 +129,10 @@ int main() {
                 printf("微分后得到多项式：");
                 PrintPolyOfIntrgral(Result);
                 DestoryPloy(Result);
-                Clean(hOut);
+                Clean(hOut, Cci);
                 break;
             }
             case 8: {
-                Clean(hOut);
                 SetConsoleTextAttribute(hOut, 0x7);
                 return 0;
             }

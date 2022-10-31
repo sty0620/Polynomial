@@ -23,7 +23,7 @@ Status CreatePoly(Poly& P)
     }
     for (int i = 0; i < n; i++) {
         printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数(非负数) \n", i + 1);
-        scanf("%lf %d", &P.elem[i].xishu, &P.elem[i].zhishu);
+        scanf("%lf %d", &P.elem[i].coef, &P.elem[i].expn);
     }
     P.length = n;
     return Success;
@@ -47,15 +47,15 @@ Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
             printf("error:faild to allocate memory\n");
             return Error;
         }
-        P.elem[0].xishu = P.elem[0].zhishu = 0;
+        P.elem[0].coef = P.elem[0].expn = 0;
         P.length = 1;
         return Success;
     }
     P.elem = (Term*)calloc(len, sizeof(Term));
     for (int i = 0,j = 0; i <= MaxZhishu; i++) {
         if (fabs(Xishu[i]) + 0.005 >= 0.01) {
-            P.elem[j].xishu = Xishu[i];
-            P.elem[j].zhishu = i;
+            P.elem[j].coef = Xishu[i];
+            P.elem[j].expn = i;
             j++;
         }
     }
@@ -91,13 +91,13 @@ Status PrintPoly(Poly P)
         printf("无数据或者尚未初始化\n");
         return Error;
     }
-    printf("%.2fx^%d", P.elem[0].xishu, P.elem[0].zhishu);
+    printf("%.2fx^%d", P.elem[0].coef, P.elem[0].expn);
     for(int i = 1; i < P.length; i++) {
-        if (P.elem[i].xishu < 0) {
-            printf("%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+        if (P.elem[i].coef < 0) {
+            printf("%.2fx^%d", P.elem[i].coef, P.elem[i].expn);
         }
         else {
-            printf("+%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+            printf("+%.2fx^%d", P.elem[i].coef, P.elem[i].expn);
         } 
     }
     printf("\n");
@@ -110,13 +110,13 @@ Status PrintPolyOfIntrgral(Poly P)
         printf("无数据或者尚未初始化\n");
         return Error;
     }
-    printf("λ+%.2fx^%d", P.elem[0].xishu, P.elem[0].zhishu);
+    printf("λ+%.2fx^%d", P.elem[0].coef, P.elem[0].expn);
     for (int i = 1; i < P.length; i++) {
-        if (P.elem[i].xishu < 0) {
-            printf("%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+        if (P.elem[i].coef < 0) {
+            printf("%.2fx^%d", P.elem[i].coef, P.elem[i].expn);
         }
         else {
-            printf("+%.2fx^%d", P.elem[i].xishu, P.elem[i].zhishu);
+            printf("+%.2fx^%d", P.elem[i].coef, P.elem[i].expn);
         }
     }
     printf(" (λ表示常数)\n");
@@ -137,17 +137,17 @@ Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
         return Error;
     }
     while (P1_Pos < P1.length && P2_Pos < P2.length) {
-        if (P1.elem[P1_Pos].zhishu < P2.elem[P2_Pos].zhishu) {
+        if (P1.elem[P1_Pos].expn < P2.elem[P2_Pos].expn) {
             ResultP.elem[Len_ResultP++] = P1.elem[P1_Pos++];
         }
-        else if (P1.elem[P1_Pos].zhishu > P2.elem[P2_Pos].zhishu) {
+        else if (P1.elem[P1_Pos].expn > P2.elem[P2_Pos].expn) {
             ResultP.elem[Len_ResultP++] = P2.elem[P2_Pos++];
         }
         else {
-            XishuResultP = P1.elem[P1_Pos].xishu + P2.elem[P2_Pos].xishu;
+            XishuResultP = P1.elem[P1_Pos].coef + P2.elem[P2_Pos].coef;
             if (XishuResultP != 0) {
-                ResultP.elem[Len_ResultP].xishu = XishuResultP;
-                ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
+                ResultP.elem[Len_ResultP].coef = XishuResultP;
+                ResultP.elem[Len_ResultP].expn = P1.elem[P1_Pos].expn;
                 Len_ResultP++;
             }
             P1_Pos++;
@@ -183,20 +183,20 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
         return Error;
     }
     while (P1_Pos < P1.length && P2_Pos < P2.length) {
-        if (P1.elem[P1_Pos].zhishu < P2.elem[P2_Pos].zhishu) {
+        if (P1.elem[P1_Pos].expn < P2.elem[P2_Pos].expn) {
             ResultP.elem[Len_ResultP++] = P1.elem[P1_Pos++];
         }
-        else if (P1.elem[P1_Pos].zhishu > P2.elem[P2_Pos].zhishu) {
-            ResultP.elem[Len_ResultP].xishu = P2.elem[P2_Pos].xishu * -1;
-            ResultP.elem[Len_ResultP].zhishu = P2.elem[P2_Pos].zhishu;
+        else if (P1.elem[P1_Pos].expn > P2.elem[P2_Pos].expn) {
+            ResultP.elem[Len_ResultP].coef = P2.elem[P2_Pos].coef * -1;
+            ResultP.elem[Len_ResultP].expn = P2.elem[P2_Pos].expn;
             Len_ResultP++;
             P2_Pos++;
         }
         else {
-            XishuResultP = P1.elem[P1_Pos].xishu - P2.elem[P2_Pos].xishu;
+            XishuResultP = P1.elem[P1_Pos].coef - P2.elem[P2_Pos].coef;
             if (XishuResultP != 0) {
-                ResultP.elem[Len_ResultP].xishu = XishuResultP;
-                ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
+                ResultP.elem[Len_ResultP].coef = XishuResultP;
+                ResultP.elem[Len_ResultP].expn = P1.elem[P1_Pos].expn;
                 Len_ResultP++;
             }
             P1_Pos++;
@@ -205,16 +205,16 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
     }
     if (P1_Pos == P1.length) {
         while (P2_Pos < P2.length) {
-            ResultP.elem[Len_ResultP].zhishu = P2.elem[P2_Pos].zhishu;
-            ResultP.elem[Len_ResultP].xishu = P2.elem[P2_Pos].xishu*-1;
+            ResultP.elem[Len_ResultP].expn = P2.elem[P2_Pos].expn;
+            ResultP.elem[Len_ResultP].coef = P2.elem[P2_Pos].coef*-1;
             Len_ResultP++;
             P2_Pos++;
         }
     }
     if (P2_Pos == P2.length) {
         while (P1_Pos < P1.length) {
-            ResultP.elem[Len_ResultP].xishu = P1.elem[P1_Pos].xishu;
-            ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu;
+            ResultP.elem[Len_ResultP].coef = P1.elem[P1_Pos].coef;
+            ResultP.elem[Len_ResultP].expn = P1.elem[P1_Pos].expn;
             Len_ResultP++;
             P1_Pos++;
         }
@@ -238,8 +238,8 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
     }
     for (P1_Pos = 0; P1_Pos < P1.length; P1_Pos++) {
         for (P2_Pos = 0; P2_Pos < P2.length; P2_Pos++) {
-            ResultP.elem[Len_ResultP].xishu = P1.elem[P1_Pos].xishu * P2.elem[P2_Pos].xishu;
-            ResultP.elem[Len_ResultP].zhishu = P1.elem[P1_Pos].zhishu + P2.elem[P2_Pos].zhishu;
+            ResultP.elem[Len_ResultP].coef = P1.elem[P1_Pos].coef * P2.elem[P2_Pos].coef;
+            ResultP.elem[Len_ResultP].expn = P1.elem[P1_Pos].expn + P2.elem[P2_Pos].expn;
             Len_ResultP++;
         }
     }
@@ -256,27 +256,27 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
         printf("无数据或者尚未初始化\n");
         return Error;
     }
-    if (P1.elem[P1.length - 1].zhishu < P2.elem[P2.length - 1].zhishu) {
-        printf("被除数多项式最大系数小于除数多项式系数\n");
+    if (P1.elem[P1.length - 1].expn < P2.elem[P2.length - 1].expn) {
+        printf("被除数多项式最大系数小于除数多项式系数，因此： \n");
         ResultP.elem = (Term*)calloc(1, sizeof(Term));
         if (NULL == ResultP.elem) {
             printf("error:faild to allocate memory\n");
             return Error;
         }
-        ResultP.elem[0].xishu = ResultP.elem[0].zhishu = 0;
+        ResultP.elem[0].coef = ResultP.elem[0].expn = 0;
         ResultP.length = 1;
         RemainderP = P1;
         return Success;
     }
     int Max_ZhishuP1 = -1, Max_ZhishuP2 = -1;
-    double P1_Xishu[1000]={0}, P2_Xishu[1000] = { 0 }, Quotient[1000] = { 0 };
+    double P1_Xishu[20000]={0}, P2_Xishu[20000] = { 0 }, Quotient[20000] = { 0 };
     for (int i = 0; i < P1.length; i++) {
-        P1_Xishu[P1.elem[i].zhishu] = P1.elem[i].xishu;
-        Max_ZhishuP1 = Max_ZhishuP1 > P1.elem[i].zhishu ? Max_ZhishuP1 : P1.elem[i].zhishu;
+        P1_Xishu[P1.elem[i].expn] = P1.elem[i].coef;
+        Max_ZhishuP1 = Max_ZhishuP1 > P1.elem[i].expn ? Max_ZhishuP1 : P1.elem[i].expn;
     }
     for (int i = 0; i < P2.length; i++) {
-        P2_Xishu[P2.elem[i].zhishu] = P2.elem[i].xishu;
-        Max_ZhishuP2 = Max_ZhishuP2 > P2.elem[i].zhishu ? Max_ZhishuP2 : P2.elem[i].zhishu;
+        P2_Xishu[P2.elem[i].expn] = P2.elem[i].coef;
+        Max_ZhishuP2 = Max_ZhishuP2 > P2.elem[i].expn ? Max_ZhishuP2 : P2.elem[i].expn;
     }
     int t1 = Max_ZhishuP1, t2 = Max_ZhishuP2;
     while (t1 >= t2) {
@@ -305,12 +305,12 @@ Status DiffPloy(Poly P, Poly& ResultP)//微分
     }
     int len = 0;
     for (int i = 0; i < P.length;i++) {
-        if (P.elem[i].zhishu == 0) {
+        if (P.elem[i].expn == 0) {
             continue;
         }
         else {
-            ResultP.elem[len].xishu = P.elem[i].xishu * P.elem[i].zhishu;
-            ResultP.elem[len].zhishu = P.elem[i].zhishu - 1;
+            ResultP.elem[len].coef = P.elem[i].coef * P.elem[i].expn;
+            ResultP.elem[len].expn = P.elem[i].expn - 1;
             len++;
         }
     }
@@ -330,8 +330,8 @@ Status IntrgralPloy(Poly P, Poly& ResultP)//积分 此时默认常数项等于0
         return Error;
     }
     for (int i = 0; i < P.length; i++) {
-        ResultP.elem[i].xishu = P.elem[i].xishu / (P.elem[i].zhishu+1);
-        ResultP.elem[i].zhishu = P.elem[i].zhishu + 1;
+        ResultP.elem[i].coef = P.elem[i].coef / (P.elem[i].expn+1);
+        ResultP.elem[i].expn = P.elem[i].expn + 1;
     }
     ResultP.length = P.length;
     return Success;
@@ -348,14 +348,14 @@ void Qsort(Poly& P, int left, int right) {
     if (left > right) {
         return;
     }
-    TempNum = P.elem[left].zhishu;
+    TempNum = P.elem[left].expn;
     TempTerm = P.elem[left];
     low = left;
     high = right;
     while (low != high) {
-        while (P.elem[high].zhishu >= TempNum && low < high)high--;
+        while (P.elem[high].expn >= TempNum && low < high)high--;
         P.elem[low] = P.elem[high];
-        while (P.elem[low].zhishu <= TempNum && low < high)low++;
+        while (P.elem[low].expn <= TempNum && low < high)low++;
         P.elem[high] = P.elem[low];
     }
     P.elem[low] = TempTerm;
@@ -365,14 +365,14 @@ void Qsort(Poly& P, int left, int right) {
 
 void MergePoly(Poly& P) {
     for (int i = 0; i < P.length; i++) {
-        for (int j = i+1; j < P.length&&P.elem[i].zhishu==P.elem[j].zhishu; ) {
-            P.elem[i].xishu += P.elem[j].xishu;
+        for (int j = i+1; j < P.length&&P.elem[i].expn==P.elem[j].expn; ) {
+            P.elem[i].coef += P.elem[j].coef;
             for (int k = j + 1; k < P.length; k++) {
                 P.elem[k - 1] = P.elem[k];
             }
             P.length--;
         }
-        if (P.elem[i].xishu == 0) {
+        if (P.elem[i].coef == 0) {
             for (int k = i + 1; k < P.length; k++) {
                 P.elem[k - 1] = P.elem[k];
             }

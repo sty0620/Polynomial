@@ -26,7 +26,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="head.h">
+    <ClInclude Include="Head.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="User.h">

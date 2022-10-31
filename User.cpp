@@ -31,22 +31,24 @@ void showmenu(HANDLE hOut, char** menu, int size, int index) {
         }
     }
 }
-void Clean(HANDLE hOut)
+void Clean(HANDLE hOut, CONSOLE_CURSOR_INFO& cci)
 {
     system("pause");
-    cciNotVisiable(hOut);
+    cciNotVisiable(hOut,cci);
     system("cls");
 }
-void cciVisiable(HANDLE hOut)
-{
-    cci.bVisible = 1;
-    SetConsoleCursorInfo(hOut, &cci);
-}
-void cciNotVisiable(HANDLE hOut)
+void cciNotVisiable(HANDLE hOut, CONSOLE_CURSOR_INFO& cci)
 {
     cci.bVisible = 0;
     SetConsoleCursorInfo(hOut, &cci);
 }
+
+void cciVisiable(HANDLE hOut, CONSOLE_CURSOR_INFO& cci)
+{
+    cci.bVisible = 1;
+    SetConsoleCursorInfo(hOut, &cci);
+}
+
 int  get_userinput(int* index, int size) {
     int ch;
     ch = _getch();
