@@ -1,3 +1,4 @@
+//自定义Haed.h 内含有涉及对于一元稀疏多项式的操作的定义
 #pragma once
 #ifndef  HEAD_H_INCLUDED
 #define HEAD_H_INCLUDED
@@ -38,4 +39,5 @@ Status IntrgralPloy(Poly P, Poly& ResultP);//积分
 void SortPoly(Poly& P);//排序
 void Qsort(Poly& P, int left, int right);
 void MergePoly(Poly& P);
+void Clearbuffer();//用于清空缓冲区数据
 #endif // 

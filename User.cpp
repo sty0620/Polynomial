@@ -1,3 +1,4 @@
+//自定义User.h 中定义的实现
 #include "User.h"
 
 CONSOLE_CURSOR_INFO cci;

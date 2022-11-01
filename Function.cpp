@@ -1,3 +1,4 @@
+//对Haed.h中定义的实现
 #include"head.h"
 
 Status InitPoly(Poly& P)
@@ -26,6 +27,7 @@ Status CreatePoly(Poly& P)
         scanf("%lf %d", &P.elem[i].coef, &P.elem[i].expn);
     }
     P.length = n;
+    Clearbuffer();
     return Success;
 }
 
@@ -60,6 +62,7 @@ Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
         }
     }
     P.length = len;
+    Clearbuffer();
     return Success;
 }
 
@@ -78,7 +81,6 @@ Status DestoryPloy(Poly& P)
 {
     P.length = 0;
     if (NULL == P.elem) {
-        printf("无数据，无需删除\n");
         return Error;
     }
     free(P.elem);
@@ -131,7 +133,7 @@ Status PrintPolyOfIntrgral(Poly P)
 Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
 {
     if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，无法对两个式子进行相加\n");
         return Error;
     }
     int P1_Pos = 0, P2_Pos = 0, Len_ResultP = 0;
@@ -177,7 +179,7 @@ Status AddPoly(Poly P1, Poly P2, Poly& ResultP)
 Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
 {
     if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，，无法对两个式子进行相减\n");
         return Error;
     }
     int P1_Pos = 0, P2_Pos = 0, Len_ResultP = 0;
@@ -232,7 +234,7 @@ Status SubPoly(Poly P1, Poly P2, Poly& ResultP)
 Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 {
     if (P1.length == 0 || NULL == P1.elem || P2.length == 0 || NULL == P2.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，，无法对两个式子进行乘\n");
         return Error;
     }
     int P1_Pos, P2_Pos, Len_ResultP = 0;
@@ -258,7 +260,7 @@ Status MulPoly(Poly P1, Poly P2, Poly& ResultP)
 Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 {
     if (P1.length == 0 || NULL == P1.elem|| P2.length == 0 || NULL == P2.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，，无法对两个式子进行相除\n");
         return Error;
     }
     if (P1.elem[P1.length - 1].expn < P2.elem[P2.length - 1].expn) {
@@ -300,7 +302,7 @@ Status DivPloy(Poly P1, Poly P2, Poly& ResultP, Poly& RemainderP)
 Status DiffPloy(Poly P, Poly& ResultP)//微分
 {
     if (P.length == 0 || NULL == P.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，无法进行求导\n");
         return Error;
     }
     ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
@@ -326,7 +328,7 @@ Status DiffPloy(Poly P, Poly& ResultP)//微分
 Status IntrgralPloy(Poly P, Poly& ResultP)//积分 此时默认常数项等于0
 {
     if (P.length == 0 || NULL == P.elem) {
-        printf("无数据或者尚未初始化\n");
+        printf("无数据或者尚未初始化，无法进行积分\n");
         return Error;
     }
     ResultP.elem = (Term*)calloc(P.length, sizeof(Term));
@@ -384,4 +386,10 @@ void MergePoly(Poly& P) {
             P.length--;
         }
     }
+}
+
+void Clearbuffer()
+{
+    char ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
 }

@@ -1,4 +1,5 @@
-﻿#include"User.h"
+﻿//用户操作界面的实现
+#include"User.h"
 CONSOLE_CURSOR_INFO Cci;
 COORD Pos = { 0, 0 };
 char* menu[] = {
@@ -12,6 +13,7 @@ int main() {
     Poly P,Q,Result;
     InitPoly(P);
     InitPoly(Q);
+    InitPoly(Result);
     CreatAndMerge(P);
     printf("\n请输入你的第二个多项式(用于减法中减数 / 除法中除数)：\n");
     CreatAndMerge(Q);
@@ -34,6 +36,7 @@ int main() {
                 while (true) {
                     int flag;
                     scanf("%d", &flag);
+                    Clearbuffer();
                     if (flag == 1) {
                         DestoryPloy(P);    
                         CreatAndMerge(P);
