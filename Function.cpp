@@ -23,8 +23,17 @@ Status CreatePoly(Poly& P)
         return Error;
     }
     for (int i = 0; i < n; i++) {
+        Clearbuffer();
         printf("您目前输入的为第%d组：请输入2个数字，中间用空格隔开，第一个数表示系数(不可为0)，第二个数表示对应指数(非负数) \n", i + 1);
-        scanf("%lf %d", &P.elem[i].coef, &P.elem[i].expn);
+        while (true) {
+            scanf("%lf %d", &P.elem[i].coef, &P.elem[i].expn);
+            if (P.elem[i].expn >=0&&P.elem[i].coef!=0) {
+                break;
+            }
+            else {
+                printf("输入的指数小于0或输入系数为0，请重新输入\n");
+            }
+        }  
     }
     P.length = n;
     Clearbuffer();
@@ -62,7 +71,6 @@ Status CreatePolyFromArrey(Poly& P, int MaxZhishu, double Xishu[])
         }
     }
     P.length = len;
-    Clearbuffer();
     return Success;
 }
 
@@ -374,13 +382,13 @@ void MergePoly(Poly& P) {
     for (int i = 0; i < P.length; i++) {
         for (int j = i+1; j < P.length&&P.elem[i].expn==P.elem[j].expn; ) {
             P.elem[i].coef += P.elem[j].coef;
-            for (int k = j + 1; k < P.length; k++) {
+            for (int k = j + 1; k < P.length; k++) {//当后面一项阳前面一项指数相同时候，系数相加，后面的项向前补齐
                 P.elem[k - 1] = P.elem[k];
             }
             P.length--;
         }
         if (P.elem[i].coef == 0) {
-            for (int k = i + 1; k < P.length; k++) {
+            for (int k = i + 1; k < P.length; k++) {//当系数相加结果为0的时候，后面的项向前补齐
                 P.elem[k - 1] = P.elem[k];
             }
             P.length--;
@@ -388,7 +396,7 @@ void MergePoly(Poly& P) {
     }
 }
 
-void Clearbuffer()
+void Clearbuffer()//清除缓冲区
 {
     char ch;
     while ((ch = getchar()) != '\n' && ch != EOF);

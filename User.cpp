@@ -9,7 +9,7 @@ void print_head() {//打印出表头
     pos.X = 0;	pos.Y = 0;
     SetConsoleCursorPosition(hOut, pos);
     SetConsoleTextAttribute(hOut, 12);
-    printf("计算机学院计科伏羲班21（1）-孙天一-3121005309-一元稀疏多项式.\n");
+    printf("计算机学院计科伏羲班-孙天一-3121005309-一元稀疏多项式-2022.11.\n");
     pos.X = 0;	pos.Y = 1;
     SetConsoleCursorPosition(hOut, pos);
     printf("************************************************************\n");
